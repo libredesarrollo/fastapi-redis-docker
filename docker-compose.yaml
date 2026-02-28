@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+    # La API depende de que el servicio de Redis esté disponible
+    depends_on:
+      - redis
+    # Reiniciar siempre el contenedor si se detiene
+    restart: always
+    # Configuración para sincronizar cambios con 'docker compose up --watch'
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: /app
+
+  redis:
+    image: "redis:7-alpine"
+    # Reiniciar siempre el contenedor si se detiene
+    restart: always
+    # Opcional: montar un volumen para persistir los datos de Redis entre reinicios
+    # volumes:
+    #   - redis-data:/data
+
+# Opcional: definir el volumen para la persistencia de datos
+# volumes:
+#   redis-data:
+# docker compose up

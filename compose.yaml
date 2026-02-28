@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    develop:
+      watch: # Modo Watch
+        - action: sync+restart
+          path: .
+          target: /app # AQUI SYNC!!
+
+  redis:
+    image: "redis:7-alpine"
